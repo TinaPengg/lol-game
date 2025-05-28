@@ -39,7 +39,21 @@ export default function GameStatsForm() {
     blueVoidgrubKill: '',
     blueAtakhanKill: '',
     redVoidgrubKill: '',
-    redAtakhanKill: ''
+    redAtakhanKill: '',
+    redDragonChemtech_DragonKill: '',
+    redDragonEarth_DragonKill: '',
+    blueDragonHextech_DragonKill: '',
+    redDragonHextech_DragonKill: '',
+    redDragonWater_DragonKill: '',
+    blueDragonFire_DragonKill: '',
+    blueDragonChemtech_DragonKill: '',
+    redDragonAir_DragonKill: '',
+    blueDragonWater_DragonKill: '',
+    redDragonFire_DragonKill: '',
+    blueDragonEarth_DragonKill: '',
+    blueDragonAir_DragonKill: '',
+    redDragonElder_DragonKill: '',
+    blueDragonElder_DragonKill: ''
   });
 
   const handleChange = (e) => {
@@ -57,12 +71,12 @@ export default function GameStatsForm() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)
       });
-      const result = await response.json();
-      console.log('後端回傳結果:', result);
-      alert(JSON.stringify(result, null, 2));
+      const responseData = await response.json();
+      console.log('後端回傳結果:', responseData);
+      setResult(responseData); // 設定結果
     } catch (error) {
       console.error('發送請求失敗:', error);
-      alert('發送請求失敗，請檢查後端服務。');
+      setResult({ error: '發送請求失敗，請檢查後端服務。' });
     }
   };
 
@@ -119,6 +133,7 @@ export default function GameStatsForm() {
   };
 
   const [hover, setHover] = useState(false);
+  const [result, setResult] = useState(null);
 
   const renderInput = (label, name) => (
     <div key={name} style={labelStyle}>
@@ -180,6 +195,19 @@ export default function GameStatsForm() {
           )}
         </div>
 
+        <div style={groupStyle}>
+          <div style={groupTitleStyle}>各種龍擊殺次數</div>
+          {[
+            'redDragonChemtech_DragonKill', 'redDragonEarth_DragonKill', 'blueDragonHextech_DragonKill',
+            'redDragonHextech_DragonKill', 'redDragonWater_DragonKill', 'blueDragonFire_DragonKill',
+            'blueDragonChemtech_DragonKill', 'redDragonAir_DragonKill', 'blueDragonWater_DragonKill',
+            'redDragonFire_DragonKill', 'blueDragonEarth_DragonKill', 'blueDragonAir_DragonKill',
+            'redDragonElder_DragonKill', 'blueDragonElder_DragonKill'
+          ].map((key) =>
+            renderInput(key, key)
+          )}
+        </div>
+
         <div style={{ textAlign: 'center', marginTop: '20px' }}>
           <button
             type="submit"
@@ -191,6 +219,22 @@ export default function GameStatsForm() {
           </button>
         </div>
       </form>
+
+
+      {/* 結果區塊 */}
+      {result && (
+        <div style={{ marginTop: '30px', padding: '15px', backgroundColor: '#1e2a44', borderRadius: '8px', textAlign: 'center', border: '1px solid #a88b4d' }}>
+          {result.error ? (
+            <p style={{ color: 'red' }}>錯誤: {result.error}</p>
+          ) : (
+            <>
+              <p style={{ fontSize: '18px', color: '#c7a560', fontWeight: 'bold' }}>{result.winner}</p>
+              <p>藍隊勝率: {result.blue_win_rate}</p>
+              <p>紅隊勝率: {result.red_win_rate}</p>
+            </>
+          )}
+        </div>
+      )}
     </div>
   );
 }
