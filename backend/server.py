@@ -7,14 +7,12 @@ import os
 app = Flask(__name__)
 CORS(app)
 
-# 載入模型
 model_path = 'rf_model.pkl'
 if not os.path.exists(model_path):
-    raise FileNotFoundError(f"找不到模型檔案: {model_path}")
+    raise FileNotFoundError(f"File not found: {model_path}")
 
 model = joblib.load(model_path)
 
-# 定義完整的 52 個特徵欄位
 ALL_FEATURES = [
     'blueChampionKill', 'blueTowerKill', 'blueInhibitorKill', 'blueBaronKill',
     'blueRiftHeraldKill', 'blueTotalGold', 'blueMinionsKilled', 'blueJungleMinionsKilled', 'blueAvgPlayerLevel',
@@ -36,22 +34,25 @@ ALL_FEATURES = [
 def analyze():
     try:
         data = request.json
-        print("收到前端資料:", data)
+        print("Frontend data accepted:", data)
 
-        # 處理資料，缺少欄位補 0
-        features = [float(data.get(key, 0) or 0) for key in ALL_FEATURES]
+        missing_fields = [key for key in ALL_FEATURES if data.get(key) in [None, '', ' ']]
+        if missing_fields:
+            return jsonify({
+                'error': f'Missing fields: {missing_fields}'
+            }), 400
+
+        features = [float(data[key]) for key in ALL_FEATURES]
         features = np.array(features).reshape(1, -1)
 
-        # 預測結果
-        prediction = model.predict(features)[0]  # 0:紅隊勝利, 1:藍隊勝利
+        prediction = model.predict(features)[0]
 
-        # 預測機率
-        probabilities = model.predict_proba(features)[0]  # [P(紅隊勝利), P(藍隊勝利)]
+        probabilities = model.predict_proba(features)[0]
         blue_win_rate = probabilities[1] * 100
         red_win_rate = probabilities[0] * 100
 
         result = {
-            'winner': '藍隊勝利' if prediction == 1 else '紅隊勝利',
+            'winner': 'BLUE SIDE VICTORY!' if prediction == 1 else 'RED SIDE VICTORY!',
             'blue_win_rate': f"{blue_win_rate:.2f}%",
             'red_win_rate': f"{red_win_rate:.2f}%"
         }
