@@ -1,70 +1,80 @@
-# Getting Started with Create React App
+---
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+**Project Title**: *Win Rate Prediction System for League of Legends Matches (Random Forest-Based)*
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+### 1. **Project Objective**
 
-### `npm start`
+This project aims to predict the win rate of a single team in *League of Legends* matches using Logistic Regression, Naive Bayes (NB), and Random Forest models. The dataset consists of matches from players ranked Master or above. The key focus of this system is to estimate the win probability of one team, rather than comparing both teams' performance outcomes.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+---
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### 2. **System Architecture**
 
-### `npm test`
+- **LightGBM**: Handles post-match *neutral resource control* features (e.g., dragons, Rift Herald, jungle CS difference), incorporating a total of 38 features.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+---
 
-### `npm run build`
+### 3. **Data Processing and Feature Engineering**
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- **Data Sources**: OP.GG, Riot API. Versioning is explicitly noted, as patch versions significantly affect champion strengths and pick rates.
+- **Labeling Win Rate**: Match outcomes are converted into binary labels ¡X 0 (loss) / 1 (win) ¡X as training targets.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+#### Feature Design
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- **Categorical Features**: Champion roles are encoded using one-hot encoding (e.g., Mage, Tank, Assassin, Crowd Control, Marksman).
+- **Statistical Features**: Overall win rate and pick rate of each champion in the current patch.
 
-### `npm run eject`
+---
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### 4. **Evaluation Metrics**
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- **Primary Metrics**: ROC-AUC and F1-score
+- **Baseline Model**: Random guessing at 50%
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+---
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+### 5. **Model Performance Reference**
 
-## Learn More
+- **DNN**: ~75.1% to 93.75%
+- **Decision Tree**: ~68.33% to 85.17%
+- **RNN**: ~63.91% to 83.54% (varies by timepoint)
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+---
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### 6. **Actual Performance Results**
 
-### Code Splitting
+#### **Random Forest**
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+**=== Validation Set Performance ===**
 
-### Analyzing the Bundle Size
+- **Validation Accuracy**: 0.9869960988296489  
+- **F1 Score**: 0.9871630295250321  
+- **ROC AUC**: 0.9993378323523441  
+- **Positive Class (1) Prediction Ratio**: 0.505851755526658
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+---
 
-### Making a Progressive Web App
+#### **Naive Bayes**
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+- **Train Accuracy**: 0.9795967644573222  
+- **Test Accuracy**: 0.9792370835345244  
+- **Cross-Validation Accuracy**: 0.9792356839446044  
 
-### Advanced Configuration
+|               | Precision | Recall | F1-score | Support |
+|---------------|-----------|--------|----------|---------|
+| **Class 0**   | 0.98      | 0.98   | 0.98     | 994     |
+| **Class 1**   | 0.98      | 0.98   | 0.98     | 1077    |
+| **Accuracy**  |           |        | 0.98     | 2071    |
+| **Macro Avg** | 0.98      | 0.98   | 0.98     | 2071    |
+| **Weighted Avg** | 0.98   | 0.98   | 0.98     | 2071    |
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+---
 
-### Deployment
+#### **Logistic Regression**
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+- **Train Accuracy**: 0.9797174936617168  
+- **Test Accuracy**: 0.9845485272815065
 
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+---
