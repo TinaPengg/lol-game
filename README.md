@@ -1,9 +1,3 @@
----
-
-**Project Title**: *Win Rate Prediction System for League of Legends Matches (Random Forest-Based)*
-
----
-
 ### 1. **Project Objective**
 
 This project aims to predict the win rate of a single team in *League of Legends* matches using Logistic Regression, Naive Bayes (NB), and Random Forest models. The dataset consists of matches from players ranked Master or above. The key focus of this system is to estimate the win probability of one team, rather than comparing both teams' performance outcomes.
